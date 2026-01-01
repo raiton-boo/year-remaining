@@ -66,7 +66,7 @@ const getDayInfo = (now: Date) => {
 };
 
 const DisplayCounter = () => {
-  const { snapshot } = useTimeContext();
+  const { snapshot, introPlaying, introDurationMs } = useTimeContext();
   const [forcedDetail, setForcedDetail] = useState(false);
   const [isDesktop, setIsDesktop] = useState(false);
   const [hydrated, setHydrated] = useState(false);
@@ -92,7 +92,8 @@ const DisplayCounter = () => {
     [snapshot.nowJst]
   );
 
-  const canForce = baseMode === 'DAYS' || baseMode === 'FULL';
+  const canForce = baseMode !== 'FULL';
+
   useEffect(() => {
     if (!canForce && forcedDetail) setForcedDetail(false);
   }, [canForce, forcedDetail]);
@@ -112,12 +113,43 @@ const DisplayCounter = () => {
 
   const mobileFormatted = formatMobile(snapshot.remainingMs, displayMode);
   const desktopFormatted = formatDesktop(snapshot.remainingMs, displayMode);
-  const showHint = hydrated && canForce && !forcedDetail && baseMode !== 'FULL';
+  const showHint = hydrated && canForce && !forcedDetail;
   const showPrefix = hydrated && displayMode !== 'FULL' && baseMode === 'DAYS';
   const safeCurrent = hydrated ? currentLabel : '----/--/-- --:--:--';
 
+  const numberFx = introPlaying
+    ? 'opacity-0 blur-[3px] translate-y-1'
+    : 'opacity-100 blur-0 translate-y-0';
+  const numberTransition = {
+    transition: `opacity ${introDurationMs}ms ease-out, transform ${introDurationMs}ms ease-out, filter ${introDurationMs}ms ease-out`,
+  };
+
+  const NumberPlaceholder = ({
+    main,
+    detail,
+  }: {
+    main: string;
+    detail?: string;
+  }) => (
+    <div className="absolute inset-0 flex flex-col items-center gap-1 pointer-events-none transition-opacity duration-150">
+      <span className="flex items-baseline gap-1 font-mono tabular-nums text-[44px] md:text-6xl text-transparent leading-tight whitespace-nowrap">
+        {showPrefix && (
+          <span className="text-transparent text-2xl translate-y-px md:translate-y-0.5">
+            {info.elapsedDays}/
+          </span>
+        )}
+        <span>{main}</span>
+      </span>
+      {detail && (
+        <span className="font-mono tabular-nums text-[28px] md:text-[28px] font-semibold text-transparent whitespace-nowrap">
+          {detail}
+        </span>
+      )}
+    </div>
+  );
+
   const HeaderLine = ({ label }: { label: string }) => (
-    <div className="flex flex-col items-center gap-1.5 select-none">
+    <div className="flex flex-col items-center gap-1.5">
       <div className="text-2xl font-semibold text-gray-900">今年の残り…</div>
       <div className="text-[11px] text-gray-500">Year Remaining Tracker</div>
       <div className="flex items-center gap-2 text-[11px] font-mono text-gray-800">
@@ -149,11 +181,20 @@ const DisplayCounter = () => {
   // モバイル
   if (!isDesktop) {
     return (
-      <div className="text-center space-y-4 select-none">
+      <div className="text-center space-y-4">
         <HeaderLine label={safeCurrent} />
 
-        <div className="flex flex-col items-center gap-1">
-          <span className="flex items-baseline gap-1 font-mono tabular-nums text-[44px] text-gray-900 leading-tight whitespace-nowrap">
+        <div className="relative flex flex-col items-center gap-1">
+          {introPlaying && (
+            <NumberPlaceholder
+              main={mobileFormatted.main}
+              detail={mobileFormatted.detail}
+            />
+          )}
+          <span
+            className={`flex items-baseline gap-1 font-mono tabular-nums text-[44px] text-gray-900 leading-tight whitespace-nowrap select-none ${numberFx}`}
+            style={numberTransition}
+          >
             {showPrefix && (
               <span className="text-gray-400 text-2xl translate-y-px">
                 {info.elapsedDays}/
@@ -168,7 +209,10 @@ const DisplayCounter = () => {
             </span>
           </span>
           {mobileFormatted.detail && (
-            <span className="font-mono tabular-nums text-[28px] font-semibold text-gray-900 whitespace-nowrap">
+            <span
+              className={`font-mono tabular-nums text-[28px] font-semibold text-gray-900 whitespace-nowrap select-none ${numberFx}`}
+              style={numberTransition}
+            >
               {mobileFormatted.detail}
             </span>
           )}
@@ -183,16 +227,21 @@ const DisplayCounter = () => {
 
   // デスクトップ
   return (
-    <div className="text-center space-y-4 select-none">
+    <div className="text-center space-y-4">
       <HeaderLine label={safeCurrent} />
 
-      <div className="flex items-baseline justify-center gap-2 font-mono tabular-nums text-6xl text-gray-900 leading-tight">
+      <div className="relative flex items-baseline justify-center gap-2 font-mono tabular-nums text-6xl text-gray-900 leading-tight select-none">
+        {introPlaying && (
+          <NumberPlaceholder main={desktopFormatted} detail={undefined} />
+        )}
         {showPrefix && (
           <span className="text-gray-400 text-2xl translate-y-0.5">
             {info.elapsedDays}/
           </span>
         )}
         <span
+          className={`${numberFx}`}
+          style={numberTransition}
           role={canForce ? 'button' : undefined}
           aria-pressed={forcedDetail}
           onPointerDown={handleToggle}

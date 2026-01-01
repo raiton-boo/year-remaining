@@ -8,16 +8,18 @@ const TitleSync = () => {
   return null;
 };
 
-const YearRemainingApp = () => {
-  return (
-    <TimeProvider>
-      <TitleSync />
-      <div className="flex flex-col items-center gap-10">
-        <DisplayCounter />
-        <DisplayProgress />
-      </div>
-    </TimeProvider>
-  );
-};
+const Content = () => (
+  <div className="flex flex-col items-center gap-10">
+    <DisplayCounter />
+    <DisplayProgress />
+  </div>
+);
+
+const YearRemainingApp = () => (
+  <TimeProvider>
+    <TitleSync />
+    <Content />
+  </TimeProvider>
+);
 
 export default YearRemainingApp;

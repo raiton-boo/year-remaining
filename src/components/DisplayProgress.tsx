@@ -7,7 +7,7 @@ const clamp = (v: number, min = 0, max = 100) =>
   Math.min(Math.max(v, min), max);
 
 const DisplayProgress = () => {
-  const { snapshot } = useTimeContext();
+  const { snapshot, introPlaying, introDurationMs } = useTimeContext();
   const [hydrated, setHydrated] = useState(false);
   useEffect(() => setHydrated(true), []);
 
@@ -29,14 +29,16 @@ const DisplayProgress = () => {
           <div className="relative h-4 flex-1 overflow-hidden rounded-full bg-[#dde3f0]">
             <motion.div
               className="h-full"
+              initial={{ width: introPlaying ? '0%' : `${shown}%` }}
+              animate={{ width: `${shown}%` }}
+              transition={{
+                duration: introPlaying ? introDurationMs / 1000 : 0.16,
+                ease: 'easeOut',
+              }}
               style={{
-                width: `${shown}%`,
                 minWidth: shown > 0 ? '4px' : '0px',
                 background: 'linear-gradient(90deg, #2563eb, #7c3aed)',
               }}
-              initial={false}
-              animate={{ width: `${shown}%` }}
-              transition={{ duration: 0.16, ease: 'easeOut' }}
             />
           </div>
           <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white text-sm shadow-sm ring-1 ring-[#d9deeb]">
