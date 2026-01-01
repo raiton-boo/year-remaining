@@ -1,3 +1,26 @@
-<footer class="py-8 text-sm text-gray-600">
-  © 202X Year Remaining by raiton-boo
+---
+const year = new Date().getFullYear();
+---
+<footer class="py-8 text-sm text-gray-600 text-center">
+  <div>
+    © {year} Year Remaining · by
+    <a
+      class="text-gray-700 underline-offset-4 hover:underline"
+      href="https://github.com/raiton-boo"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      raiton-boo
+    </a>
+  </div>
+  <div>
+    <a
+      class="text-gray-700 underline-offset-4 hover:underline"
+      href="https://github.com/raiton-boo/time-projection/issues"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      お問い合わせ
+    </a>
+  </div>
 </footer>
