@@ -1,0 +1,15 @@
+<svg id="progress-svg" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" class="w-full max-w-lg">
+        <!-- Background -->
+        <rect width="512" height="512" fill="#faf8f5"/>
+        <!-- Days text -->
+        <text id="days-text" x="256" y="180" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="36" font-weight="500" fill="#1f2937">
+          残り...365日
+        </text>
+        <!-- Progress bar background -->
+        <rect x="80" y="240" width="280" height="50" rx="25" fill="#e5e7eb"/>
+        <!-- Progress bar fill (0% so width is 0) -->
+        <rect id="progress-fill" x="80" y="240" width="0" height="50" rx="25" fill="#1a1a1a"/>
+        <!-- Percentage text -->
+        <text id="percentage-text" x="400" y="275" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="36" font-weight="600" fill="#1f2937">
+          0％
+        </text></svg>
