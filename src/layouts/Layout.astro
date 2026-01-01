@@ -31,7 +31,7 @@ const ogImageHref = asset(ogImage);
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
-    <meta name="theme-color" content="#faf8f5" />
+    <meta name="theme-color" content="#eef1f7" />
 
     <!-- Favicon -->
     <link rel="icon" type="image/png" href={faviconHref} />
@@ -63,7 +63,12 @@ const ogImageHref = asset(ogImage);
 
     <title>{title}</title>
   </head>
-  <body class="min-h-screen bg-[#faf8f5] text-[#1f2937]">
+  <body
+    class="min-h-screen text-[#1f2937]"
+    style="
+      background: linear-gradient(180deg, #f2f4f9 0%, #eef1f7 45%, #e9edf5 100%);
+    "
+  >
     <slot />
   </body>
 </html>
