@@ -6,7 +6,9 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "test": "vitest",
+    "test:run": "vitest run"
   },
   "dependencies": {
     "@astrojs/react": "^4.4.2",
@@ -14,8 +16,15 @@
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
     "astro": "^5.16.6",
+    "date-fns": "^4.1.0",
+    "date-fns-tz": "^3.2.0",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
     "tailwindcss": "^4.1.18"
+  },
+  "devDependencies": {
+    "clsx": "^2.1.1",
+    "tailwind-merge": "^3.4.0",
+    "vitest": "^4.0.16"
   }
 }
