@@ -22,3 +22,9 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# VSCode setting folder
+.vscode/
+
+# docs (要件定義やセキュリティポリシーなどのドキュメント。非公開に設定)
+docs/
