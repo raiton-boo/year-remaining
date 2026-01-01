@@ -23,7 +23,6 @@ export const TimeProvider = ({ children }: { children: ReactNode }) => {
   );
 
   useEffect(() => {
-    // ブラウザのみエンジン起動
     timeEngine.start();
     const unsubscribe = timeEngine.subscribe((snap) => setSnapshot(snap));
     return () => {

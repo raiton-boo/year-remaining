@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { motion } from 'motion/react';
 import { useTimeContext } from '@/hooks/useTimeContext';
+import { floorFixed } from '@/lib/time-engine';
 
 const clamp = (v: number, min = 0, max = 100) =>
   Math.min(Math.max(v, min), max);
@@ -10,11 +11,10 @@ const DisplayProgress = () => {
   const [hydrated, setHydrated] = useState(false);
   useEffect(() => setHydrated(true), []);
 
-  const percentRaw = useMemo(
-    () => clamp(snapshot.progressPercent),
+  const percent = useMemo(
+    () => clamp(snapshot.progressPercent, 0, 100),
     [snapshot.progressPercent]
   );
-  const percent = useMemo(() => Number(percentRaw.toFixed(6)), [percentRaw]);
   const shown = hydrated ? percent : 0;
 
   return (
@@ -47,7 +47,7 @@ const DisplayProgress = () => {
         <div className="flex items-center justify-between text-xs text-gray-500">
           <span>0%</span>
           <span className="font-mono tabular-nums text-lg text-gray-900">
-            {shown.toFixed(6)}%
+            {floorFixed(shown, 6)}%
           </span>
         </div>
       </div>

@@ -7,6 +7,10 @@ const MS_PER_DAY = 86_400_000;
 const truncate6 = (value: number): number =>
   Math.floor(value * 1_000_000) / 1_000_000;
 
+// 汎用の「切り捨て toFixed」
+export const floorFixed = (value: number, digits: number) =>
+  (Math.floor(value * 10 ** digits) / 10 ** digits).toFixed(digits);
+
 // JST の 00:00:00.000 を UTC ミリ秒で求める（UTC+9 を -9h して計算）
 const jstMidnightUtcMs = (year: number): number =>
   Date.UTC(year, 0, 1, -9, 0, 0, 0);
