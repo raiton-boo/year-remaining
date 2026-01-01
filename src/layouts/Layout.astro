@@ -1,10 +1,10 @@
 ---
+import '@/styles/global.css';
 interface Props {
   title?: string;
   description?: string;
 }
-
-const {title = "Year Remaining", description = "今年があとどれくらい残っているかを可視化するサイト"} = Astro.props;
+const { title = 'Year Remaining', description = '今年があとどれくらい残っているかを可視化するサイト' } = Astro.props;
 ---
 <!DOCTYPE html>
 <html lang="ja">
@@ -15,18 +15,11 @@ const {title = "Year Remaining", description = "今年があとどれくらい�
     <meta name="description" content={description} />
 
     <!-- Google Fonts: Inter & JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      rel="preconnect"
-      href="https://fonts.googleapis.com"
-    />
-    <link
-      rel="preconnect"
-      href="https://fonts.gstatic.com"
-      crossorigin
-    />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap"
       rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap"
     />
 
     <!-- OGP / Favicon -->

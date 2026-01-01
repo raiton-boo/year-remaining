@@ -1,6 +1,15 @@
 ---
-import Layout from '../layouts/Layout.astro';
+import Layout from '@/layouts/Layout.astro';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import YearRemainingApp from '@/components/YearRemainingApp';
 ---
-
 <Layout>
+  <main class="mx-auto flex min-h-screen max-w-3xl flex-col px-4">
+    <Header />
+    <section class="flex-1 py-8">
+      <YearRemainingApp client:load />
+    </section>
+    <Footer />
+  </main>
 </Layout>
