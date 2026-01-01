@@ -3,6 +3,16 @@ name: Github Pages Deploy
 on:
   push:
     branches: [main]
+    paths:
+      - 'src/**'
+      - 'public/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'astro.config.mjs'
+      - 'tailwind.config.mjs'
+      - 'tsconfig.json'
+      - 'vitest.config.ts'
+      - '.github/workflows/deploy.yml'
   workflow_dispatch:
 
 permissions:
@@ -20,24 +30,19 @@ jobs:
     steps:
       - name: チェックアウト
         uses: actions/checkout@v4
-
       - name: Node.jsのセットアップ
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
-
       - name: 依存関係のインストール
         run: npm ci
-
       - name: Astroプロジェクトのビルド
         run: npm run build
         env:
           NODE_ENV: production
-
       - name: GitHub Pagesのセットアップ
         uses: actions/configure-pages@v4
-
       - name: ビルド成果物のアップロード
         uses: actions/upload-pages-artifact@v3
         with:
