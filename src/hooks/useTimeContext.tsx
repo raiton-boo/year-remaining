@@ -2,11 +2,14 @@ import {
   createContext,
   useContext,
   useEffect,
-  useRef,
   useState,
   type ReactNode,
 } from 'react';
-import { getTimeSnapshot, type TimeSnapshot } from '@/lib/time-engine';
+import {
+  getTimeSnapshot,
+  timeEngine,
+  type TimeSnapshot,
+} from '@/lib/time-engine';
 
 interface TimeContextValue {
   snapshot: TimeSnapshot;
@@ -15,19 +18,17 @@ interface TimeContextValue {
 const TimeContext = createContext<TimeContextValue | null>(null);
 
 export const TimeProvider = ({ children }: { children: ReactNode }) => {
-  const [snapshot, setSnapshot] = useState<TimeSnapshot>(() =>
-    getTimeSnapshot()
+  const [snapshot, setSnapshot] = useState<TimeSnapshot>(
+    () => timeEngine.getSnapshot?.() ?? getTimeSnapshot()
   );
-  const rafRef = useRef<number | null>(null);
 
   useEffect(() => {
-    const loop = () => {
-      setSnapshot(getTimeSnapshot());
-      rafRef.current = requestAnimationFrame(loop);
-    };
-    rafRef.current = requestAnimationFrame(loop);
+    // ブラウザのみエンジン起動
+    timeEngine.start();
+    const unsubscribe = timeEngine.subscribe((snap) => setSnapshot(snap));
     return () => {
-      if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
+      unsubscribe();
+      timeEngine.stop();
     };
   }, []);
 
