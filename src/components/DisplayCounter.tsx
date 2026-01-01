@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useTimeContext } from '@/hooks/useTimeContext';
 import type { DisplayMode } from '@/lib/types';
 
@@ -70,6 +70,7 @@ const DisplayCounter = () => {
   const [forcedDetail, setForcedDetail] = useState(false);
   const [isDesktop, setIsDesktop] = useState(false);
   const [hydrated, setHydrated] = useState(false);
+  const pointerHandledRef = useRef(false);
 
   useEffect(() => setHydrated(true), []);
 
@@ -100,15 +101,24 @@ const DisplayCounter = () => {
 
   const displayMode = forcedDetail && canForce ? 'FULL' : baseMode;
 
-  const handleToggle: React.PointerEventHandler<HTMLSpanElement> = (e) => {
-    if (
-      canForce &&
-      (e.pointerType === 'touch' || e.pointerType === 'mouse') &&
-      e.button === 0
-    ) {
-      if (e.pointerType === 'touch') e.preventDefault();
-      setForcedDetail((prev) => !prev);
+  const toggleDetail = () => {
+    if (!canForce) return;
+    setForcedDetail((prev) => !prev);
+  };
+
+  const handlePointerDown: React.PointerEventHandler<HTMLSpanElement> = (e) => {
+    if (e.pointerType === 'mouse' && e.button !== 0) return;
+    if (e.pointerType === 'touch') e.preventDefault();
+    pointerHandledRef.current = true;
+    toggleDetail();
+  };
+
+  const handleClick: React.MouseEventHandler<HTMLSpanElement> = () => {
+    if (pointerHandledRef.current) {
+      pointerHandledRef.current = false;
+      return;
     }
+    toggleDetail();
   };
 
   const mobileFormatted = formatMobile(snapshot.remainingMs, displayMode);
@@ -203,7 +213,8 @@ const DisplayCounter = () => {
             <span
               role={canForce ? 'button' : undefined}
               aria-pressed={forcedDetail}
-              onPointerDown={handleToggle}
+              onPointerDown={handlePointerDown}
+              onClick={handleClick}
             >
               {mobileFormatted.main}
             </span>
@@ -244,7 +255,8 @@ const DisplayCounter = () => {
           style={numberTransition}
           role={canForce ? 'button' : undefined}
           aria-pressed={forcedDetail}
-          onPointerDown={handleToggle}
+          onPointerDown={handlePointerDown}
+          onClick={handleClick}
         >
           {desktopFormatted}
         </span>
