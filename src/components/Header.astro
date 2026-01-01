@@ -1,4 +1,20 @@
-<header class="py-6">
-  <h1 class="text-2xl font-semibold text-[#1f2937]">Year Remaining</h1>
-  <p class="text-sm text-gray-600">今年があとどれくらい残っているかを可視化する</p>
+---
+const lottieSrc = 'https://lottie.host/9f96e161-7127-45f1-a76b-11d4a5c5ff91/dA2JdhCSWT.lottie';
+---
+<script type="module" src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.8.11/dist/dotlottie-wc.js"></script>
+
+<header class="flex items-center gap-4 pb-5 pt-3 border-b border-gray-200">
+  <dotlottie-wc
+    src={lottieSrc}
+    autoplay
+    loop
+    style="width:80px;height:80px"
+    class="md:w-24 md:h-24 shrink-0"
+  ></dotlottie-wc>
+  <div>
+    <h1 class="text-2xl md:text-[30px] font-semibold leading-tight text-[#1f2937]">
+      今年はあとどのくらい？
+    </h1>
+    <p class="mt-1 text-sm md:text-base text-gray-600">Year Remaining</p>
+  </div>
 </header>
