@@ -1,18 +1,43 @@
 ---
 import '@/styles/global.css';
+
 interface Props {
   title?: string;
   description?: string;
+  ogImage?: string;
 }
-const { title = 'Year Remaining', description = '今年があとどれくらい残っているかを可視化するサイト' } = Astro.props;
+
+const {
+  title = 'Year Remaining',
+  description = '今年があとどれくらい残っているかを可視化するサイト',
+  ogImage = '/ogp-image.svg',
+} = Astro.props;
 ---
 <!DOCTYPE html>
 <html lang="ja">
   <head>
-    <meta charset="utf-8" />
+    <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{title}</title>
     <meta name="description" content={description} />
+    <meta name="theme-color" content="#faf8f5" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- OGP -->
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:local" content="ja_JP" />
+    <meta property="og:url" content={`${Astro.site}`} />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:creator" content="@raiton-boo" />
 
     <!-- Google Fonts: Inter & JetBrains Mono -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -22,13 +47,7 @@ const { title = 'Year Remaining', description = '今年があとどれくらい�
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap"
     />
 
-    <!-- OGP / Favicon -->
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta property="og:title" content={title} />
-    <meta property="og:description" content={description} />
-    <meta property="og:image" content="/ogp-image.svg" />
-    <meta property="og:type" content="website" />
-    <meta property="og:locale" content="ja_JP" />
+    <title>{title}</title>
   </head>
   <body class="min-h-screen bg-[#faf8f5] text-[#1f2937]">
     <slot />

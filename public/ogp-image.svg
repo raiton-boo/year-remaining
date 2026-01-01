@@ -1,19 +1,14 @@
-<svg id="progress-svg" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" class="w-full max-w-lg">
-        <!-- Background -->
-        <rect width="512" height="512" fill="#faf8f5"/>
-        <!-- Main title -->
-        <text id="main-title" x="256" y="130" text-anchor="middle" font-family="'Brush Script MT', cursive, system-ui" font-size="52" font-weight="400" fill="#1a1a1a" style="font-style: italic">
-          TimeProjection
-        </text>
-        <!-- Days text -->
-        <text id="days-text" x="256" y="200" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="32" font-weight="500" fill="#1f2937">
-          残り...365日
-        </text>
-        <!-- Progress bar background -->
-        <rect x="80" y="240" width="280" height="50" rx="25" fill="#e5e7eb"/>
-        <!-- Progress bar fill (0% so width is 0) -->
-        <rect id="progress-fill" x="80" y="240" width="0" height="50" rx="25" fill="#1a1a1a"/>
-        <!-- Percentage text -->
-        <text id="percentage-text" x="400" y="275" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="36" font-weight="600" fill="#1f2937">
-          0％
-        </text></svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" aria-hidden="true">
+  <rect width="1200" height="630" fill="#faf8f5" />
+  <text x="600" y="180" text-anchor="middle" font-family="Inter, system-ui, -apple-system, sans-serif" font-size="64" font-weight="700" fill="#1f2937">
+    Year Remaining
+  </text>
+  <text x="600" y="260" text-anchor="middle" font-family="Inter, system-ui, -apple-system, sans-serif" font-size="32" font-weight="500" fill="#4b5563">
+    今年があとどれくらい残っているかを可視化する
+  </text>
+  <rect x="250" y="320" width="700" height="60" rx="30" fill="#e5e7eb" />
+  <rect x="250" y="320" width="70" height="60" rx="30" fill="#1a1a1a" />
+  <text x="950" y="360" text-anchor="end" font-family="JetBrains Mono, Inter, monospace" font-size="36" font-weight="700" fill="#1f2937">
+    0.000000%
+  </text>
+</svg>
