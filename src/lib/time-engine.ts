@@ -1,5 +1,5 @@
 import { toZonedTime } from 'date-fns-tz';
-import type { TimeState } from './types';
+import type { TimeState } from '@/types';
 
 const JST_TIMEZONE = 'Asia/Tokyo';
 const MS_PER_DAY = 86_400_000;
