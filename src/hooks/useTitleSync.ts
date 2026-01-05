@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { useTimeContext } from './useTimeContext';
-import { floorFixed } from '@/lib/time-engine';
+import { floorFixed } from '@/core/time-engine';
 
 export const useTitleSync = () => {
   const { snapshot } = useTimeContext();

@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { motion } from 'motion/react';
 import { useTimeContext } from '@/hooks/useTimeContext';
-import { floorFixed } from '@/lib/time-engine';
+import { floorFixed } from '@/core/time-engine';
 
 const clamp = (v: number, min = 0, max = 100) =>
   Math.min(Math.max(v, min), max);

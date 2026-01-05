@@ -11,7 +11,7 @@ import {
   getTimeSnapshot,
   timeEngine,
   type TimeSnapshot,
-} from '@/lib/time-engine';
+} from '@/core/time-engine';
 
 interface TimeContextValue {
   snapshot: TimeSnapshot;
