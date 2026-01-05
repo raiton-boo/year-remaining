@@ -4,10 +4,11 @@ import type { TimeState } from '@/types';
 const JST_TIMEZONE = 'Asia/Tokyo';
 const MS_PER_DAY = 86_400_000;
 
+// 小数点以下6桁で切り捨て
 const truncate6 = (value: number): number =>
   Math.floor(value * 1_000_000) / 1_000_000;
 
-// 汎用の「切り捨て toFixed」
+// 小数点以下指定桁数で切り捨てた文字列を返す
 export const floorFixed = (value: number, digits: number) =>
   (Math.floor(value * 10 ** digits) / 10 ** digits).toFixed(digits);
 
@@ -15,6 +16,18 @@ export const floorFixed = (value: number, digits: number) =>
 const jstMidnightUtcMs = (year: number): number =>
   Date.UTC(year, 0, 1, -9, 0, 0, 0);
 
+/**
+ * 現在時刻のスナップショットを取得する
+ *
+ * - nowJst: 現在時刻（JST）
+ * - startOfYearJst: 年始（JST）
+ * - endOfYearJst: 年末（JST）
+ * - remainingMs: 残りミリ秒
+ * - elapsedMs: 経過ミリ秒
+ * - totalMs: 年間合計ミリ秒
+ * - progressPercent: 進捗率（0–100、小数6桁切り捨て）
+ * - timeState: 時間状態（残り日数・新年フラグ）
+ */
 export interface TimeSnapshot {
   nowJst: Date;
   startOfYearJst: Date;
@@ -26,6 +39,7 @@ export interface TimeSnapshot {
   timeState: TimeState;
 }
 
+// 現在時刻のスナップショットを取得する
 export const getTimeSnapshot = (): TimeSnapshot => {
   const now = new Date();
   const nowJst = toZonedTime(now, JST_TIMEZONE);
@@ -76,8 +90,10 @@ export const getTimeSnapshot = (): TimeSnapshot => {
   };
 };
 
+// リスナー関数の型
 type Listener = (snap: TimeSnapshot) => void;
 
+// タイムエンジン
 export class TimeEngine {
   private rafId: number | null = null;
   private intervalId: ReturnType<typeof setInterval> | null = null;

@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import { useTimeContext } from './useTimeContext';
 import { floorFixed } from '@/core/time-engine';
 
+// ドキュメントタイトルを時間の進捗に同期させるフック
 export const useTitleSync = () => {
   const { snapshot } = useTimeContext();
   const original = useRef<string | null>(null);

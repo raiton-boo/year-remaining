@@ -13,14 +13,17 @@ import {
   type TimeSnapshot,
 } from '@/core/time-engine';
 
+// 時間に関するコンテキストを提供するフック
 interface TimeContextValue {
   snapshot: TimeSnapshot;
   introPlaying: boolean;
   introDurationMs: number;
 }
 
+// コンテキストの作成
 const TimeContext = createContext<TimeContextValue | null>(null);
 
+// プロバイダーコンポーネント
 export const TimeProvider = ({ children }: { children: ReactNode }) => {
   const [introPlaying, setIntroPlaying] = useState(true);
   const [introDurationMs, setIntroDurationMs] = useState(400);
@@ -64,6 +67,7 @@ export const TimeProvider = ({ children }: { children: ReactNode }) => {
   return <TimeContext.Provider value={value}>{children}</TimeContext.Provider>;
 };
 
+// カスタムフック
 export const useTimeContext = (): TimeContextValue => {
   const ctx = useContext(TimeContext);
   if (!ctx) throw new Error('useTimeContext must be used within TimeProvider');

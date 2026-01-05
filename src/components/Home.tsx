@@ -1,7 +1,7 @@
 import { TimeProvider } from '@/hooks/useTimeContext';
 import { useTitleSync } from '@/hooks/useTitleSync';
-import DisplayCounter from './DisplayCounter';
-import DisplayProgress from './DisplayProgress';
+import DisplayCounter from './features/DisplayCounter';
+import DisplayProgress from './features/DisplayProgress';
 
 const TitleSync = () => {
   useTitleSync();
