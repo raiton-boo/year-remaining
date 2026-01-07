@@ -1,156 +1,136 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+// src/components/features/DisplayCounter.tsx
+import React, { useEffect, useMemo, useState } from 'react';
 import { useTimeContext } from '@/hooks/useTimeContext';
-import type { DisplayMode } from '@/types';
-import { TimeDisplay } from '../ui/TimeSegment';
+import { motion, AnimatePresence, LayoutGroup } from 'motion/react';
+import { ElapsedHeader } from '../ui/ElapsedHeader';
+import { TimeSegment, TimeUnitDot } from '../ui/TimeSegment';
+import { useSessionStorage } from '@/hooks/useSessionStorage';
+import type { TimeData } from '@/types';
 
-// 表示モードの決定
-const getDisplayMode = (now: Date): DisplayMode => {
-  const m = now.getMonth() + 1;
-  const d = now.getDate();
-  if (m === 12 && d >= 20) return 'FULL';
-  if (m === 12) return 'DAYS_MINUTES';
-  if (m === 11 && d >= 1) return 'DAYS_HOURS';
-  return 'DAYS';
-};
-
-// フォーマット関数
-const formatMobile = (ms: number, mode: DisplayMode) => {
-  const totalSeconds = Math.floor(ms / 1000);
-  const days = Math.floor(totalSeconds / 86_400);
-  const hours = Math.floor((totalSeconds % 86_400) / 3600);
-  const minutes = Math.floor((totalSeconds % 3600) / 60);
-  const seconds = totalSeconds % 60;
-  const millis = ms % 1000;
-
-  if (mode === 'DAYS') return { main: `${days}日` };
-  if (mode === 'DAYS_HOURS') return { main: `${days}日 ${hours}時間` };
-  if (mode === 'DAYS_MINUTES')
-    return { main: `${days}日 ${hours}時間 ${minutes}分` };
-
-  const secondsWithMs = (seconds + millis / 1000).toFixed(3);
-  return {
-    main: `${days}日 ${hours}時間`,
-    detail: `${minutes}分 ${secondsWithMs}秒`,
-  };
-};
-
-// フォーマット関数
-const formatDesktop = (ms: number, mode: DisplayMode) => {
-  const totalSeconds = Math.floor(ms / 1000);
-  const days = Math.floor(totalSeconds / 86_400);
-  const hours = Math.floor((totalSeconds % 86_400) / 3600);
-  const minutes = Math.floor((totalSeconds % 3600) / 60);
-  const seconds = totalSeconds % 60;
-  const millis = ms % 1000;
-
-  if (mode === 'DAYS') return `${days}日`;
-  if (mode === 'DAYS_HOURS') return `${days}日 ${hours}時間`;
-  if (mode === 'DAYS_MINUTES') return `${days}日 ${hours}時間 ${minutes}分`;
-  const secondsWithMs = (seconds + millis / 1000).toFixed(3);
-  return `${days}日 ${hours}時間 ${minutes}分 ${secondsWithMs}秒`;
-};
-
-// 年間日数情報取得
-const getDayInfo = (now: Date) => {
-  const start = new Date(now.getFullYear(), 0, 1);
-  const end = new Date(now.getFullYear() + 1, 0, 1);
-  const dayOfYear = Math.floor((+now - +start) / 86_400_000) + 1;
-  const totalDays = Math.floor((+end - +start) / 86_400_000);
-  const elapsedDays = dayOfYear;
-  const remainingDays = totalDays - dayOfYear;
-  return { totalDays, elapsedDays, remainingDays };
-};
-
-// メインコンポーネント
-const DisplayCounter = () => {
-  const { snapshot, introPlaying, introDurationMs } = useTimeContext();
-  const [forcedDetail, setForcedDetail] = useState(false);
-  const [isDesktop, setIsDesktop] = useState(false);
+const DisplayCounter: React.FC = () => {
+  const { snapshot } = useTimeContext();
   const [hydrated, setHydrated] = useState(false);
-  const pointerHandledRef = useRef(false);
+  const [forcedDetail, setForcedDetail] = useSessionStorage('count-detail-forced', false);
 
   useEffect(() => setHydrated(true), []);
 
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    const mq = window.matchMedia('(min-width: 768px)');
-    const update = () => setIsDesktop(mq.matches);
-    update();
-    mq.addEventListener('change', update);
-    return () => mq.removeEventListener('change', update);
-  }, []);
+  const currentYear = new Date().getFullYear();
 
-  const baseMode = useMemo(
-    () => getDisplayMode(snapshot.nowJst),
-    [snapshot.nowJst]
-  );
-  const info = useMemo(() => getDayInfo(snapshot.nowJst), [snapshot.nowJst]);
+  // --- Logic ---
+  const elapsedDays = useMemo(() => {
+    const start = new Date(currentYear, 0, 1);
+    return Math.floor((new Date().getTime() - start.getTime()) / 86400000);
+  }, [snapshot]);
 
-  const canForce = baseMode !== 'FULL';
+  const dynamicLabel = useMemo(() => {
+    const d = snapshot.timeState.days;
+    if (d >= 300) return `${currentYear}年は始まったばかり`;
+    if (d >= 200) return `${currentYear}年も折り返し地点へ`;
+    if (d >= 100) return `後半戦を刻む ${currentYear}年`;
+    if (d >= 50) return `終わりへと向かう ${currentYear}年`;
+    if (d >= 21) return `いよいよ大詰めを迎えた ${currentYear}年`;
+    return `${currentYear}年 最高の締めくくりを`;
+  }, [snapshot.timeState.days, currentYear]);
 
-  useEffect(() => {
-    if (!canForce && forcedDetail) setForcedDetail(false);
-  }, [canForce, forcedDetail]);
+  const timeData: TimeData = useMemo(() => {
+    const ms = snapshot.remainingMs;
+    const totalSec = Math.floor(ms / 1000);
+    return {
+      days: snapshot.timeState.days,
+      hours: String(Math.floor((totalSec % 86400) / 3600)).padStart(2, '0'),
+      minutes: String(Math.floor((totalSec % 3600) / 60)).padStart(2, '0'),
+      seconds: String(totalSec % 60).padStart(2, '0'),
+      millis: String(Math.floor((ms % 1000) / 10)).padStart(2, '0'),
+    };
+  }, [snapshot]);
 
-  const displayMode = forcedDetail && canForce ? 'FULL' : baseMode;
+  const baseMode = useMemo(() => {
+    const m = new Date().getMonth() + 1;
+    const d = new Date().getDate();
+    if (m === 12 && d >= 20) return 'FULL';
+    if (m === 12) return 'DAYS_MINUTES';
+    if (m === 11) return 'DAYS_HOURS';
+    return 'DAYS';
+  }, [snapshot]);
 
-  const toggleDetail = () => {
-    if (!canForce) return;
-    setForcedDetail((prev) => !prev);
-  };
+  const isDetailActive = forcedDetail || baseMode !== 'DAYS';
+  const isFullMode = forcedDetail || baseMode === 'FULL';
 
-  const handlePointerDown: React.PointerEventHandler<HTMLSpanElement> = (e) => {
-    if (e.pointerType === 'mouse' && e.button !== 0) return;
-    if (e.pointerType === 'touch') e.preventDefault();
-    pointerHandledRef.current = true;
-    toggleDetail();
-  };
-
-  const handleClick: React.MouseEventHandler<HTMLSpanElement> = () => {
-    if (pointerHandledRef.current) {
-      pointerHandledRef.current = false;
-      return;
-    }
-    toggleDetail();
-  };
-
-  // 表示データの準備
-  const mobileFormatted = formatMobile(snapshot.remainingMs, displayMode);
-  const desktopFormatted = formatDesktop(snapshot.remainingMs, displayMode);
-  const showHint = hydrated && canForce && !forcedDetail;
-  const showPrefix = hydrated && displayMode !== 'FULL' && baseMode === 'DAYS';
-  const prefixText = showPrefix ? `${info.elapsedDays}/` : undefined;
-
-  // SSR/初回ロード時のプレースホルダ
-  if (!hydrated) {
-    return (
-      <div className="text-center space-y-4 select-none">
-        <div className="flex flex-col items-center gap-1">
-          <span className="font-mono tabular-nums text-[44px] text-gray-300 leading-tight">
-            --日
-          </span>
-          <span className="font-mono tabular-nums text-[28px] text-gray-200">
-            --分 --
-          </span>
-        </div>
-      </div>
-    );
-  }
+  if (!hydrated) return <div className="h-64 sm:h-80" />;
 
   return (
-    <div onPointerDown={handlePointerDown} onClick={handleClick}>
-      <TimeDisplay
-        mainText={isDesktop ? desktopFormatted : mobileFormatted.main}
-        detailText={isDesktop ? undefined : mobileFormatted.detail}
-        prefixText={prefixText}
-        isDesktop={isDesktop}
-        introPlaying={introPlaying}
-        introDurationMs={introDurationMs}
-        showHint={showHint}
-        onToggle={() => {}}
-        canForce={canForce}
-        forcedDetail={forcedDetail}
-      />
+    <div
+      className={`flex flex-col items-center justify-center py-8 sm:py-12 select-none w-full overflow-hidden ${
+        baseMode !== 'FULL' ? 'cursor-pointer' : ''
+      }`}
+      onClick={() => baseMode !== 'FULL' && setForcedDetail(!forcedDetail)}
+    >
+      <ElapsedHeader year={currentYear} days={elapsedDays} />
+
+      <LayoutGroup>
+        <div className="flex flex-col items-center w-full px-4">
+          <motion.div layout className="mb-3 sm:mb-4">
+            <span className="font-wa text-sm sm:text-base tracking-[0.4em] sm:tracking-[0.6em] text-slate-700 font-bold ml-[0.4em]">
+              {snapshot.timeState.days <= 30 ? '今年も残り' : '今年の残り'}
+            </span>
+          </motion.div>
+
+          <div className="flex items-center justify-center min-h-30 sm:min-h-36 w-full">
+            <motion.div layout className="flex items-baseline shrink-0">
+              <span className="font-main text-6xl sm:text-9xl text-slate-950 leading-none tracking-[-0.05em]">
+                {timeData.days}
+              </span>
+              <span className="font-wa text-xl sm:text-3xl text-slate-900 ml-1 sm:ml-2 font-bold italic">
+                日
+              </span>
+            </motion.div>
+
+            <AnimatePresence>
+              {isDetailActive && (
+                <motion.div
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -10 }}
+                  className="flex items-center border-l border-slate-300 ml-3 pl-3 sm:ml-8 sm:pl-8 gap-2 sm:gap-6 shrink-0"
+                >
+                  <TimeSegment value={timeData.hours} label="時間" />
+                  <TimeUnitDot />
+                  <TimeSegment value={timeData.minutes} label="分" />
+
+                  {isFullMode && (
+                    <>
+                      <TimeUnitDot />
+                      <div className="flex items-baseline gap-1 sm:gap-2 shrink-0">
+                        <TimeSegment value={timeData.seconds} label="秒" />
+                        <span className="font-fluid text-lg sm:text-3xl text-slate-500 italic self-end pb-0.5 ml-0.5">
+                          {timeData.millis}
+                        </span>
+                      </div>
+                    </>
+                  )}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </div>
+      </LayoutGroup>
+
+      <div className="mt-10 sm:mt-16 w-full flex flex-col items-center px-6">
+        <span className="font-wa text-lg sm:text-3xl tracking-[0.2em] sm:tracking-[0.4em] text-slate-900 font-bold text-center">
+          {dynamicLabel}
+        </span>
+        <div className="h-10 sm:h-12 mt-4 sm:mt-6 flex items-center justify-center">
+          {baseMode !== 'FULL' && (
+            <div className="flex items-center gap-4 sm:gap-6">
+              <div className="w-1 h-1 rounded-full bg-slate-800" />
+              <span className="font-wa text-[10px] sm:text-[12px] tracking-[0.3em] text-slate-800 font-bold uppercase">
+                {forcedDetail ? 'RESET' : 'DETAILS'}
+              </span>
+              <div className="w-1 h-1 rounded-full bg-slate-800" />
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 };
