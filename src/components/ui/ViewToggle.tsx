@@ -1,16 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { useSessionStorage } from '@/hooks/useSessionStorage';
 
 type ViewMode = 'progress' | 'countdown';
 
 export const ViewToggle = () => {
-  const [mode, setMode] = useState<ViewMode>(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('view-mode');
-      return saved === 'progress' || saved === 'countdown' ? saved : 'progress';
-    }
-    return 'progress';
-  });
+  const [mode, setMode] = useSessionStorage<ViewMode>('view-mode', 'progress');
 
   const [isAnimating, setIsAnimating] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -18,12 +13,6 @@ export const ViewToggle = () => {
   useEffect(() => {
     setMounted(true);
   }, []);
-
-  useEffect(() => {
-    if (mounted) {
-      localStorage.setItem('view-mode', mode);
-    }
-  }, [mode, mounted]);
 
   const triggerHaptic = () => {
     if (typeof navigator !== 'undefined' && navigator.vibrate) {
@@ -47,7 +36,7 @@ export const ViewToggle = () => {
 
   const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
 
-  // アイコンコンポーネント：視認性を高めるために strokeWidth を調整
+  // アイコンコンポーネント
   const Icon = ({ type, active }: { type: ViewMode; active: boolean }) => (
     <div
       className={`transition-all duration-300 ${
@@ -90,16 +79,13 @@ export const ViewToggle = () => {
         onClick={isMobile ? handleMobileTap : handleToggle}
         animate={{ width: isMobile && !isAnimating ? 48 : 96 }}
         transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-        // 土台：より深い影で「溝」を表現
         className="relative h-12 rounded-full bg-[#f0f2f5] p-1 cursor-pointer overflow-hidden shadow-[inset_4px_4px_8px_#d1d5db,inset_-4px_-4px_8px_#ffffff] shrink-0"
       >
-        {/* 背景：非選択アイコンを固定位置に配置 (w-22 = 88px) */}
         <div className="absolute inset-y-1 left-1 w-22 flex items-center justify-between px-2.5 z-0">
           <Icon type="progress" active={false} />
           <Icon type="countdown" active={false} />
         </div>
 
-        {/* スライダー（動く丸）：強い凸感 */}
         <motion.div
           className="absolute h-10 w-10 rounded-full bg-[#f0f2f5] z-10 shadow-[4px_4px_10px_#c8ccd1,-4px_-4px_10px_#ffffff] flex items-center justify-center border border-white/20"
           animate={{
@@ -107,11 +93,9 @@ export const ViewToggle = () => {
           }}
           transition={{ type: 'spring', stiffness: 500, damping: 35 }}
         >
-          {/* 現在のモードのアイコン（青色） */}
           <Icon type={mode} active={true} />
         </motion.div>
 
-        {/* スマホ用マスクスライダー：非展開時に反対側を隠す */}
         <motion.div
           className="absolute inset-0 z-0 pointer-events-none"
           animate={{
