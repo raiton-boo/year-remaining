@@ -1,31 +1,59 @@
-/* Google Fonts の読み込み */
-/* これを先に置かないと怒られる */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;700&family=Montserrat:wght@400;500;700&family=Noto+Sans+JP:wght@300;400;500;700&display=swap');
+/* 外部フォントを先にインポートしないと怒られる
+ * LINE Seed JP: 標準テキスト（日本語）
+ * Geist Mono: メインの力強い数値
+ * Space Mono: 流動的な時間・小数点（Italicで使用）
+ * Hina Mincho: 和風の情緒的な題字
+ */
+@import url('https://fonts.googleapis.com/css2?family=Geist+Mono:wght@700&family=Space+Mono:ital,wght@1,400;1,700&family=Hina+Mincho&display=swap');
+
+/* LINE Seed JP: Regular */
+@font-face {
+  font-family: 'LINE Seed JP';
+  src: url('/src/assets/LINESeedJP/Web/WOFF2/LINESeedJP_OTF_Rg.woff2')
+    format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* LINE Seed JP: Bold */
+@font-face {
+  font-family: 'LINE Seed JP';
+  src: url('/src/assets/LINESeedJP/Web/WOFF2/LINESeedJP_OTF_Bd.woff2')
+    format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
 
 @import 'tailwindcss';
 
 :root {
-  /* フォント変数の定義 */
-  --font-sans: 'Inter', 'Noto Sans JP', system-ui, -apple-system, sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
-  --font-display: 'Montserrat', 'Inter', sans-serif;
+  --font-sans: 'LINE Seed JP', sans-serif;
+  --font-mono: 'Geist Mono', monospace;
+  --font-accent: 'Space Mono', monospace;
+  --font-wa: 'Hina Mincho', serif;
 }
 
 body {
   background: #f0f2f5;
   color: #1e293b;
   font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
 }
 
-/* Font Utility Classes */
-.font-sans {
-  font-family: var(--font-sans);
+/* ユーティリティクラス */
+.tabular {
+  font-variant-numeric: tabular-nums;
 }
-
-.font-mono {
+.font-main {
   font-family: var(--font-mono);
+  font-weight: 700;
 }
-
-.font-display {
-  font-family: var(--font-display);
+.font-fluid {
+  font-family: var(--font-accent);
+  font-style: italic;
+}
+.font-wa {
+  font-family: var(--font-wa);
 }

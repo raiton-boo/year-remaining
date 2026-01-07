@@ -31,44 +31,51 @@ const ogImageHref = asset(ogImage);
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
-    <meta name="theme-color" content="#eef1f7" />
+    <meta name="theme-color" content="#f0f2f5" />
 
-    <!-- Favicon -->
     <link rel="icon" type="image/png" href={faviconHref} />
     <link rel="shortcut icon" href={faviconHref} />
     <link rel="apple-touch-icon" href={faviconHref} />
 
-    <!-- OGP -->
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
     <meta property="og:image" content={ogImageHref} />
     <meta property="og:locale" content="ja_JP" />
-    <!-- <meta property="og:url" content="https://example.com/year-remaining/" /> -->
 
-    <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImageHref} />
     <meta name="twitter:creator" content="@raiton-boo" />
 
-    <!-- Google Fonts: Inter & JetBrains Mono -->
+    <link
+      rel="preload"
+      href="/src/assets/LINESeedJP/Web/WOFF2/LINESeedJP_OTF_Rg.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
+    <link 
+      href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@700&family=Space+Mono:ital,wght@1,400;1,700&family=Hina+Mincho&display=swap"
       rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap"
     />
 
     <title>{title}</title>
   </head>
-  <body
-    class="min-h-screen text-[#1f2937]"
-    style="
-      background: linear-gradient(180deg, #f2f4f9 0%, #eef1f7 45%, #e9edf5 100%);
-    "
-  >
+  <body class="relative min-h-screen bg-[#f0f2f5] text-[#1e293b]">
+    <div class="fixed inset-0 pointer-events-none opacity-[0.025] z-9999 mix-blend-multiply" aria-hidden="true">
+      <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+        <filter id="noiseFilter">
+          <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch" />
+        </filter>
+        <rect width="100%" height="100%" filter="url(#noiseFilter)" />
+      </svg>
+    </div>
+
     <slot />
   </body>
 </html>
