@@ -10,17 +10,16 @@ export default defineConfig({
   site: 'https://raiton-boo.github.io',
   base: '/year-remaining/',
   integrations: [react()],
+  server: {
+    host: true, // 同一LAN内の端末からのアクセス許可
+    port: 4321, // ポート番号を固定
+  },
 
   vite: {
-    plugins: [tailwindcss()],
-    resolve: {
-      alias: {
-        '@': '/src',
-        '@components': '/src/components',
-        '@layouts': '/src/layouts',
-        '@pages': '/src/pages',
-        '@styles': '/src/styles',
-      },
+    // type anyを付与して型エラーを回避
+    plugins: [/** @type {any} */ (tailwindcss())],
+    server: {
+      strictPort: false, // ポート競合時に自動で別ポートに変更
     },
   },
 });
