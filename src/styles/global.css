@@ -1,10 +1,31 @@
-@import "tailwindcss";
+/* Google Fonts の読み込み */
+/* これを先に置かないと怒られる */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;700&family=Montserrat:wght@400;500;700&family=Noto+Sans+JP:wght@300;400;500;700&display=swap');
+
+@import 'tailwindcss';
 
 :root {
-  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  /* フォント変数の定義 */
+  --font-sans: 'Inter', 'Noto Sans JP', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --font-display: 'Montserrat', 'Inter', sans-serif;
 }
 
 body {
-  background: #faf8f5;
-  color: #1f2937;
+  background: #f0f2f5;
+  color: #334155;
+  font-family: var(--font-sans);
+}
+
+/* Font Utility Classes */
+.font-sans {
+  font-family: var(--font-sans);
+}
+
+.font-mono {
+  font-family: var(--font-mono);
+}
+
+.font-display {
+  font-family: var(--font-display);
 }

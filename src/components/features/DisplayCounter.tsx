@@ -50,14 +50,6 @@ const formatDesktop = (ms: number, mode: DisplayMode) => {
   return `${days}日 ${hours}時間 ${minutes}分 ${secondsWithMs}秒`;
 };
 
-// 現在日時フォーマット
-const formatCurrent = (now: Date) => {
-  const pad = (n: number) => n.toString().padStart(2, '0');
-  return `${now.getFullYear()}/${pad(now.getMonth() + 1)}/${pad(
-    now.getDate()
-  )} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
-};
-
 // 年間日数情報取得
 const getDayInfo = (now: Date) => {
   const start = new Date(now.getFullYear(), 0, 1);
@@ -93,10 +85,6 @@ const DisplayCounter = () => {
     [snapshot.nowJst]
   );
   const info = useMemo(() => getDayInfo(snapshot.nowJst), [snapshot.nowJst]);
-  const currentLabel = useMemo(
-    () => formatCurrent(snapshot.nowJst),
-    [snapshot.nowJst]
-  );
 
   const canForce = baseMode !== 'FULL';
 
@@ -131,27 +119,12 @@ const DisplayCounter = () => {
   const desktopFormatted = formatDesktop(snapshot.remainingMs, displayMode);
   const showHint = hydrated && canForce && !forcedDetail;
   const showPrefix = hydrated && displayMode !== 'FULL' && baseMode === 'DAYS';
-  const safeCurrent = hydrated ? currentLabel : '----/--/-- --:--:--';
   const prefixText = showPrefix ? `${info.elapsedDays}/` : undefined;
 
   // SSR/初回ロード時のプレースホルダ
   if (!hydrated) {
     return (
       <div className="text-center space-y-4 select-none">
-        <div className="flex flex-col items-center gap-1.5">
-          <div className="text-2xl font-semibold text-gray-900">
-            今年の残り…
-          </div>
-          <div className="text-[11px] text-gray-500">
-            Year Remaining Tracker
-          </div>
-          <div className="flex items-center gap-2 text-[11px] font-mono text-gray-800">
-            <span className="rounded-full border border-gray-300 bg-white px-2 py-1">
-              現在日時 {safeCurrent}
-            </span>
-          </div>
-          <div className="h-px w-16 bg-linear-to-r from-gray-200 to-gray-100" />
-        </div>
         <div className="flex flex-col items-center gap-1">
           <span className="font-mono tabular-nums text-[44px] text-gray-300 leading-tight">
             --日
@@ -167,7 +140,6 @@ const DisplayCounter = () => {
   return (
     <div onPointerDown={handlePointerDown} onClick={handleClick}>
       <TimeDisplay
-        label={safeCurrent}
         mainText={isDesktop ? desktopFormatted : mobileFormatted.main}
         detailText={isDesktop ? undefined : mobileFormatted.detail}
         prefixText={prefixText}
@@ -175,7 +147,7 @@ const DisplayCounter = () => {
         introPlaying={introPlaying}
         introDurationMs={introDurationMs}
         showHint={showHint}
-        onToggle={() => {}} // 親divでハンドリングするため空関数
+        onToggle={() => {}}
         canForce={canForce}
         forcedDetail={forcedDetail}
       />

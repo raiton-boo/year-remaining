@@ -1,3 +1,5 @@
+/** 時間に関するコンテキストを提供するフック */
+
 import {
   createContext,
   useContext,

@@ -1,72 +1,13 @@
 ---
-const lottieSrc = 'https://lottie.host/9f96e161-7127-45f1-a76b-11d4a5c5ff91/dA2JdhCSWT.lottie';
+import { ViewToggle } from '@/components/ui/ViewToggle';
 ---
-<header class="flex items-center gap-4 pb-5 pt-3 border-b border-gray-200">
-  <dotlottie-wc
-    id="lottie-player"
-    src={lottieSrc}
-    autoplay
-    loop
-    style="width:80px;height:80px;display:none"
-    class="md:w-24 md:h-24 shrink-0"
-  ></dotlottie-wc>
-
-  <!-- フォールバック -->
-  <div
-    id="lottie-fallback"
-    class="flex h-20 w-20 items-center justify-center rounded-full bg-white shadow-sm ring-1 ring-[#d9deeb] md:h-24 md:w-24 shrink-0 select-none"
-    aria-hidden="true"
-  >
-    🕒
-  </div>
-
+<header class="flex items-center justify-between pb-5 pt-3 border-b border-gray-200/50">
   <div>
-    <h1 class="text-2xl md:text-[30px] font-semibold leading-tight text-[#1f2937]">
-      今年はあとどのくらい？
+    <h1 class="text-2xl font-light tracking-widest text-gray-800 font-sans">
+      ことしのこり
     </h1>
-    <p class="mt-1 text-sm md:text-base text-gray-600">Year Remaining</p>
   </div>
+
+  <!-- トグルボタン -->
+  <ViewToggle client:load />
 </header>
-
-<!-- アイドル後にLottieを読み込み、フォールバックを置き換える -->
-<script type="module" is:inline>
-  const showPlayer = () => {
-    const player = document.getElementById('lottie-player');
-    const fallback = document.getElementById('lottie-fallback');
-    if (player) player.style.display = 'block';
-    fallback?.remove();
-  };
-
-  const loadDotLottie = async () => {
-    if (customElements.get('dotlottie-wc')) return true;
-    const sources = [
-      'https://unpkg.com/@lottiefiles/dotlottie-wc@0.8.11/dist/dotlottie-wc.js',
-      'https://cdn.jsdelivr.net/npm/@lottiefiles/dotlottie-wc@0.8.11/dist/dotlottie-wc.js',
-    ];
-    for (const src of sources) {
-      try {
-        await import(src);
-        return true;
-      } catch (e) {
-        // try next
-      }
-    }
-    return false;
-  };
-
-  const load = async () => {
-    const ok = await loadDotLottie();
-    if (ok) showPlayer();
-  };
-
-  const schedule = () => {
-    const fn = () => load();
-    if ('requestIdleCallback' in window) {
-      window.requestIdleCallback(fn, { timeout: 1200 });
-    } else {
-      setTimeout(fn, 300);
-    }
-  };
-
-  schedule();
-</script>

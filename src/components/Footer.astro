@@ -1,26 +1,41 @@
 ---
 const year = new Date().getFullYear();
 ---
-<footer class="py-8 text-sm text-gray-600 text-center">
-  <div>
-    © {year} Year Remaining · by
+
+<footer class="py-12 px-6 flex flex-col items-center gap-5">
+  {/* コピーライト：byを含めた自然な一文 */}
+  <div 
+    class="text-[13px] text-slate-400/80 flex items-center"
+    style="filter: drop-shadow(1px 1px 0px #ffffff);"
+  >
+    <span>© {year} Year Remaining</span>
+    <span class="mx-2 opacity-30">|</span>
+    <span class="mr-1.5">by</span>
     <a
-      class="text-gray-700 underline-offset-4 hover:underline"
       href="https://github.com/raiton-boo"
       target="_blank"
       rel="noopener noreferrer"
+      class="text-slate-500 hover:text-blue-600 transition-colors underline-offset-4 hover:underline decoration-blue-600/30 font-medium"
     >
       raiton-boo
     </a>
   </div>
-  <div>
-    <a
-      class="text-gray-700 underline-offset-4 hover:underline"
-      href="https://github.com/raiton-boo/time-projection/issues"
-      target="_blank"
-      rel="noopener noreferrer"
-    >
-      お問い合わせ
-    </a>
-  </div>
+
+  {/* お問い合わせ：さらに控えめに、かつ質感を揃えたミニボタン */}
+  <a
+    href="https://github.com/raiton-boo/time-projection/issues"
+    target="_blank"
+    rel="noopener noreferrer"
+    class="group text-[11px] px-3.5 py-1 rounded-full bg-[#f0f2f5] text-slate-400 transition-all duration-200
+          shadow-[2px_2px_4px_#d1d5db,-2px_-2px_4px_#ffffff]
+          hover:shadow-[1px_1px_2px_#d1d5db,-1px_-1px_2px_#ffffff]
+          hover:text-slate-500
+          active:shadow-[inset_1px_1px_2px_#d1d5db,inset_-1px_-1px_2px_#ffffff]
+          flex items-center gap-1.5"
+  >
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="opacity-50 group-hover:opacity-80 transition-opacity">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+    </svg>
+    お問い合わせ
+  </a>
 </footer>
